@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/_GAME/_Scenes/Boot.unity
+    guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/_GAME/_Scenes/Main_Menu.unity
+    guid: b727d1e0b2aa83346b70ab514bee85da
+  - enabled: 1
+    path: Assets/_GAME/_Scenes/Achievements.unity
+    guid: 7138d0886aa0d7949aff628d9b235aa3
+  - enabled: 1
+    path: Assets/_GAME/_Scenes/Leaderboard.unity
+    guid: d6516b5afe6601441b8b62b207ffbf52
+  - enabled: 1
+    path: Assets/_GAME/_Scenes/Quests.unity
+    guid: c7758099789cfc94ab643f1e43ff0fb8
+  - enabled: 1
+    path: Assets/_GAME/_Scenes/Profile.unity
+    guid: 07c9a8d0a1decf4478e937cf4bad8f98
+  - enabled: 1
+    path: Assets/_GAME/_Scenes/Settings.unity
+    guid: ca6db7060e7e8224cbcdc9db36377672
+  - enabled: 1
+    path: Assets/_GAME/_Scenes/Games/Game_Crypto_Vibe.unity
+    guid: c8db9e552ab71cc44940f6200b69441c
+  - enabled: 1
+    path: Assets/_GAME/_Scenes/Games/Game_Cyber_Master.unity
+    guid: c2d97f65c08cb5a4dadd16c39586b1bd
+  - enabled: 1
+    path: Assets/_GAME/_Scenes/Games/Game_Diamond_Retro.unity
+    guid: fe94f36cf1e390e418f687e4a823849b
+  - enabled: 1
+    path: Assets/_GAME/_Scenes/Games/Game_Electric_Dice.unity
+    guid: c1b8b86a1e77eab4fb013c03ba69b952
+  - enabled: 1
+    path: Assets/_GAME/_Scenes/Games/Game_Infinite_Score.unity
+    guid: 5e20ae5065d6f6f4f8654c9b5537e846
+  - enabled: 1
+    path: Assets/_GAME/_Scenes/Games/Game_Neon_Wheel.unity
+    guid: cfb4210f565b43f4eb400c3ec1604078
+  - enabled: 1
+    path: Assets/_GAME/_Scenes/Games/Game_Plinko_Vibe.unity
+    guid: 0503b692c86603345b13014dfe1628e6
+  - enabled: 1
+    path: Assets/_GAME/_Scenes/Games/Game_Reels.unity
+    guid: 81c64e643c9327e47bf4dfa4873240d1
+  - enabled: 1
+    path: Assets/_GAME/_Scenes/Games/Game_Vault.unity
+    guid: 741a4ccc0f2a510439de51fdb4b1a9eb
+  - enabled: 1
+    path: Assets/_GAME/_Scenes/Games/Game_Wheel_Of_Revolut.unity
+    guid: 42f91cd1b9045984e868cb25d68e2951
+  m_configObjects:
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

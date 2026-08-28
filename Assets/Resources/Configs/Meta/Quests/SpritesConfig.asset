@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d66a68f0fade6946bcf970720986a00, type: 3}
+  m_Name: SpritesConfig
+  m_EditorClassIdentifier: Assembly-CSharp::Core.SO.QuestSpritesConfig
+  <Entries>k__BackingField:
+  - Tag: play_every_arcade
+    Sprite: {fileID: 1436584291130134872, guid: 4ff86477eec8b9041947121a6788bded, type: 3}
+  - Tag: spin_10_reels
+    Sprite: {fileID: -1659534500483157837, guid: c15c573fd6bd80d4ba116827e5464b55, type: 3}
+  - Tag: collect_5_diamonds
+    Sprite: {fileID: -5257384367972058909, guid: d2aba94d78fbdcd44a9dd2a9348c4577, type: 3}
+  - Tag: trigger_turbo_mode
+    Sprite: {fileID: -1646120937725738588, guid: d6dea92f64a7d8d4f88987bb3b3cdd95, type: 3}
+  - Tag: reach_10x_multiplier
+    Sprite: {fileID: -2365685877851165187, guid: 356c0362769660c4398206e0c930e552, type: 3}
+  - Tag: claim_free_energy
+    Sprite: {fileID: 2670950896861839156, guid: daba00cef8521114da5364e696e314a6, type: 3}
+  - Tag: open_the_vault
+    Sprite: {fileID: -8964718854991657791, guid: d54e612d5fcb5fe48942646a65ce5595, type: 3}
+  - Tag: hit_21
+    Sprite: {fileID: 4325916942298426446, guid: 25b44c2b50742224b968360ea2eb5229, type: 3}
+  - Tag: launch_3_rockets
+    Sprite: {fileID: 2205083346918597449, guid: ee45b2d81ead9b941882851ad01ae82d, type: 3}
+  - Tag: drop_10_plinko_balls
+    Sprite: {fileID: 7514548126942077217, guid: 87be64af902701848a35118598536482, type: 3}
+  - Tag: spin_lucky_wheel
+    Sprite: {fileID: 8645402989287070583, guid: 5dc4665cac9b76343954662350e68100, type: 3}
+  - Tag: roll_double_dice
+    Sprite: {fileID: 8253741878262303550, guid: 0c651166e748be54daa1b40f0f90aa62, type: 3}
+  - Tag: earn_2500_coins
+    Sprite: {fileID: 6116188034216586524, guid: 79d16dbee41f41d439a0d35c8b5b4398, type: 3}
+  - Tag: complete_5_combos
+    Sprite: {fileID: -7008362938385411121, guid: dd0c7578b71e24e44bc01c33870e4407, type: 3}
+  - Tag: upgrade_level
+    Sprite: {fileID: 8081546238252063962, guid: 9bce2165fbd4cb74c87d79efb3ff0e15, type: 3}
+  - Tag: win_3_games
+    Sprite: {fileID: 7040843770037045746, guid: 13153e55dc8943149bd64b383ed8302e, type: 3}

@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ecb7bfbb4c41ac4c87bfb154e287f29, type: 3}
+  m_Name: PlinkoConfig
+  m_EditorClassIdentifier: Assembly-CSharp::Core.SO.PlinkoConfig
+  PegRows: 8
+  PegsInFirstRow: 3
+  PegSpacing: 0.6
+  RowSpacing: 0.6
+  BucketSpacing: 0.6
+  BucketOffsetY: 0.25
+  SpawnPoint: {x: 0, y: -1.65, z: 0}
+  SpawnYOffset: 0.25
+  SimplifiedAnimation: 0
+  FinalFallDuration: 0.8
+  Buckets:
+  - Multiplier: 6.17
+    Weight: 1
+    Sprite: {fileID: 2937745346696623743, guid: 474fdc15089291c4c819c2ac61d5e01b, type: 3}
+  - Multiplier: 4.8
+    Weight: 2
+    Sprite: {fileID: -1978818071, guid: 474fdc15089291c4c819c2ac61d5e01b, type: 3}
+  - Multiplier: 3.43
+    Weight: 3
+    Sprite: {fileID: -656254735, guid: 474fdc15089291c4c819c2ac61d5e01b, type: 3}
+  - Multiplier: 2.06
+    Weight: 4
+    Sprite: {fileID: 1034938770, guid: 474fdc15089291c4c819c2ac61d5e01b, type: 3}
+  - Multiplier: 0
+    Weight: 7
+    Sprite: {fileID: -474962141, guid: 474fdc15089291c4c819c2ac61d5e01b, type: 3}
+  - Multiplier: 2.06
+    Weight: 4
+    Sprite: {fileID: 1034938770, guid: 474fdc15089291c4c819c2ac61d5e01b, type: 3}
+  - Multiplier: 3.43
+    Weight: 3
+    Sprite: {fileID: -656254735, guid: 474fdc15089291c4c819c2ac61d5e01b, type: 3}
+  - Multiplier: 4.8
+    Weight: 2
+    Sprite: {fileID: -1978818071, guid: 474fdc15089291c4c819c2ac61d5e01b, type: 3}
+  - Multiplier: 6.17
+    Weight: 1
+    Sprite: {fileID: 2937745346696623743, guid: 474fdc15089291c4c819c2ac61d5e01b, type: 3}

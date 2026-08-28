@@ -1,0 +1,130 @@
+name: Build
+
+on: push
+
+env:
+  UNITY_LICENSE: "<?xml version=\"1.0\" encoding=\"UTF-8\"?><root>\n    <License id=\"Terms\">\n        <MachineBindings>\n            <Binding Key=\"1\" Value=\"576562626572264761624c65526f7578\"/>\n            <Binding Key=\"2\" Value=\"576562626572264761624c65526f7578\"/>\n        </MachineBindings>\n        <MachineID Value=\"D7nTUnjNAmtsUMcnoyrqkgIbYdM=\"/>\n        <SerialHash Value=\"1efd68fa935192b6090ac03c77d289a9f588c55a\"/>\n        <Features>\n            <Feature Value=\"33\"/>\n            <Feature Value=\"1\"/>\n            <Feature Value=\"12\"/>\n            <Feature Value=\"2\"/>\n            <Feature Value=\"24\"/>\n            <Feature Value=\"3\"/>\n            <Feature Value=\"36\"/>\n            <Feature Value=\"17\"/>\n            <Feature Value=\"19\"/>\n            <Feature Value=\"62\"/>\n        </Features>\n        <DeveloperData Value=\"AQAAAEY0LUg2WFMtUE00NS1SM0M4LUUyWlotWkdWOA==\"/>\n        <SerialMasked Value=\"F4-H6XS-PM45-R3C8-E2ZZ-XXXX\"/>\n        <StartDate Value=\"2018-05-02T00:00:00\"/>\n        <UpdateDate Value=\"2021-05-21T20:48:24\"/>\n        <InitialActivationDate Value=\"2018-05-02T14:21:28\"/>\n        <LicenseVersion Value=\"6.x\"/>\n        <ClientProvidedVersion Value=\"2019.2.11f1\"/>\n        <AlwaysOnline Value=\"false\"/>\n        <Entitlements>\n            <Entitlement Ns=\"unity_editor\" Tag=\"UnityPersonal\" Type=\"EDITOR\" ValidTo=\"9999-12-31T00:00:00\"/>\n            <Entitlement Ns=\"unity_editor\" Tag=\"DarkSkin\" Type=\"EDITOR_FEATURE\" ValidTo=\"9999-12-31T00:00:00\"/>\n        </Entitlements>\n    </License>\n<Signature xmlns=\"http://www.w3.org/2000/09/xmldsig#\"><SignedInfo><CanonicalizationMethod Algorithm=\"http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments\"/><SignatureMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#rsa-sha1\"/><Reference URI=\"#Terms\"><Transforms><Transform Algorithm=\"http://www.w3.org/2000/09/xmldsig#enveloped-signature\"/></Transforms><DigestMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#sha1\"/><DigestValue>Ui8I607il6gWRH3o8x/HMV7eva8=</DigestValue></Reference></SignedInfo><SignatureValue>bW/8QoV0skYzBUtBvMCxZsQa1kjdBw1cumQZeaSuF9FjpHzp3blFEBTtvvOOB7C0j/19qtdV/QMq\nXkMQj2qQ99rYQPXSrPKySQrdm/6riYd2VPhOMc4QSsbV/OphYOMYkYju1tsvY4ZDi6TDFuT7C1OR\nwiCtmvbUs9Lw/u3jMGjWd/cqZAkupulnXpGz8ltI2GA3RWwpFH+rxEOJWlpqYIfioKntlHv8dbAx\n5fONrmMH2yMJQaS3YOW2noZkoMCgMlsuXE6ddqKz0soWbYXqXEQcNHY4JWcDr97ISdeI3fDP1/XR\nz0bzpLWTGR4lPxuREKW7jqnk/NwoVUXx+anUKg==</SignatureValue></Signature></root>"
+  UNITY_EMAIL: "unitydatastorage@gmail.com"
+  UNITY_PASSWORD: "qwerty12345Q"
+  
+  APP_NAME: "com.spinreval.gamsmix-release"
+  
+  AndroidKeystorePass: "qwerty"
+  AndroidKeyaliasPass: "qwerty"
+  AndroidKeyaliasName: "qwerty"
+  
+  ChatID_APK: "-1003810793512"
+  ChatID_AAB: "-1003810793512"
+  ChatID_LOG: "5419377045"
+  BotToken: "8979603664:AAEiC0c56g5uNg-WVL7JcpGbw_8ysgV2y40"
+  BotTokenLog: "7014683250:AAECtvRo7m_b0CX8jzIXEe_GaqTg9OGSyTQ"
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Free up Github Actions disk space
+        run: |
+          echo "Removing preinstalled software to free space..."
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/share/powershell
+          sudo rm -rf /usr/local/share/chromium
+          sudo rm -rf /opt/ghc
+          sudo rm -rf $AGENT_TOOLSDIRECTORY
+          sudo docker system prune -af --volumes
+          sudo apt-get clean
+          df -h
+
+      - name: Checkout
+        uses: actions/checkout@v2.4.2
+
+      - name: Encode keystore to base64
+        id: encode_keystore
+        run: echo "::set-output name=encoding::$(base64 -w 0 ${{ github.workspace }}/user.keystore)"
+
+      - name: Build APK
+        uses: game-ci/unity-builder@v2.1.2
+        with:
+          customImage: 'unityci/editor:2022.3.62f3-android-3'
+          buildName: ${{ env.APP_NAME }}
+          androidAppBundle: false
+          androidKeystoreName: user.keystore
+          androidKeystoreBase64: ${{ steps.encode_keystore.outputs.encoding }}
+          androidKeystorePass: ${{ env.AndroidKeystorePass }}
+          androidKeyaliasName: ${{ env.AndroidKeyaliasName }}
+          androidKeyaliasPass: ${{ env.AndroidKeyaliasPass }}
+          targetPlatform: Android
+
+      - name: Send APK to Telegram
+        run: |
+          curl -X POST "https://api.telegram.org/bot${{ env.BotToken }}/sendDocument" \
+          -F "chat_id=${{ env.ChatID_APK }}" \
+          -F "document=@${{ github.workspace }}/build/Android/${{ env.APP_NAME }}.apk"
+
+  build-aab:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Free up Github Actions disk space
+        run: |
+          echo "Removing preinstalled software to free space..."
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/share/powershell
+          sudo rm -rf /usr/local/share/chromium
+          sudo rm -rf /opt/ghc
+          sudo rm -rf $AGENT_TOOLSDIRECTORY
+          sudo docker system prune -af --volumes
+          sudo apt-get clean
+          df -h
+
+      - name: Checkout
+        uses: actions/checkout@v2.4.2
+
+      - name: Encode keystore to base64
+        id: encode_keystore
+        run: echo "::set-output name=encoding::$(base64 -w 0 ${{ github.workspace }}/user.keystore)"
+
+      - name: Build AAB
+        uses: game-ci/unity-builder@v2.1.2
+        with:
+          customImage: 'unityci/editor:2022.3.62f3-android-3'
+          buildName: ${{ env.APP_NAME }}
+          androidAppBundle: true
+          androidVersionCode: 1
+          androidKeystoreName: user.keystore
+          androidKeystoreBase64: ${{ steps.encode_keystore.outputs.encoding }}
+          androidKeystorePass: ${{ env.AndroidKeystorePass }}
+          androidKeyaliasName: ${{ env.AndroidKeyaliasName }}
+          androidKeyaliasPass: ${{ env.AndroidKeyaliasPass }}
+          targetPlatform: Android
+
+      - name: Send AAB to Telegram
+        run: |
+          curl -X POST "https://api.telegram.org/bot${{ env.BotToken }}/sendDocument" \
+          -F "chat_id=${{ env.ChatID_AAB }}" \
+          -F "document=@${{ github.workspace }}/build/Android/${{ env.APP_NAME }}.aab"
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: [build-apk, build-aab]
+    if: always()
+    steps:
+      - name: Set Build Status
+        run: |
+          if [ "${{ needs.build-apk.result }}" == "success" ] && [ "${{ needs.build-aab.result }}" == "success" ]; then
+            echo "STATUS=✅ Успешно" >> $GITHUB_ENV
+          elif [ "${{ needs.build-apk.result }}" == "failure" ] || [ "${{ needs.build-aab.result }}" == "failure" ]; then
+            echo "STATUS=❌ Ошибка" >> $GITHUB_ENV
+          else
+            echo "STATUS=⚠️ Завершено с предупреждениями" >> $GITHUB_ENV
+          fi
+          
+      - name: Send Build Status Notification
+        run: |
+          curl -X POST "https://api.telegram.org/bot${{ env.BotTokenLog }}/sendMessage" \
+          -d "chat_id=${{ env.ChatID_LOG }}" \
+          -d "text=*Build Status*: ${{ env.STATUS }} \
+               *App Name*: ${{ env.APP_NAME }} \
+               *Triggered By*: ${{ github.actor }} \
+               *Logs*: [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"

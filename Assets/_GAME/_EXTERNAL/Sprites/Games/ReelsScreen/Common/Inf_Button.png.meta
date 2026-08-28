@@ -1,0 +1,258 @@
+fileFormatVersion: 2
+guid: 956c9e46a5ce4e44ebde9a5c23bafabf
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8897093174325548928
+    second: Inf_Button_0
+  - first:
+      213: 8451076341176236599
+    second: Inf_Button_1
+  - first:
+      213: -987540721462151450
+    second: Inf_Button_2
+  - first:
+      213: -4362768246703781052
+    second: Inf_Button_3
+  - first:
+      213: 1998191077445625757
+    second: Inf_Button_4
+  - first:
+      213: 4810110699403939186
+    second: Inf_Button_5
+  - first:
+      213: 8750225660886914601
+    second: Inf_Button_6
+  - first:
+      213: 5463945079439117047
+    second: Inf_Button_7
+  - first:
+      213: 5026864990630251560
+    second: Inf_Button_8
+  - first:
+      213: 8883091444140687265
+    second: Inf_Button_9
+  - first:
+      213: 1475048168997939371
+    second: Inf_Button_10
+  - first:
+      213: 7332165351794278493
+    second: Inf_Button_11
+  - first:
+      213: -7931293132825684275
+    second: Inf_Button_12
+  - first:
+      213: 2255472831249882001
+    second: Inf_Button_13
+  - first:
+      213: 5136274179453659077
+    second: Inf_Button_14
+  - first:
+      213: 4396596756666792278
+    second: Inf_Button_15
+  - first:
+      213: 5478080684940603376
+    second: Inf_Button_16
+  - first:
+      213: -5432624515080792355
+    second: Inf_Button_17
+  - first:
+      213: 1779069548491249836
+    second: Inf_Button_18
+  - first:
+      213: -2559726221682075975
+    second: Inf_Button_19
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 512
+    resizeAlgorithm: 0
+    textureFormat: 48
+    textureCompression: 1
+    compressionQuality: 100
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 1
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 512
+    resizeAlgorithm: 0
+    textureFormat: 48
+    textureCompression: 1
+    compressionQuality: 100
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 1
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Inf_Button_0
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 96
+        width: 391
+        height: 390
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 088e5c295ec278480800000000000000
+      internalID: -8897093174325548928
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 24eee71b306a88b44b1de5d3733a53f4
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Inf_Button_0: -8897093174325548928
+      Inf_Button_1: 8451076341176236599
+      Inf_Button_10: 1475048168997939371
+      Inf_Button_11: 7332165351794278493
+      Inf_Button_12: -7931293132825684275
+      Inf_Button_13: 2255472831249882001
+      Inf_Button_14: 5136274179453659077
+      Inf_Button_15: 4396596756666792278
+      Inf_Button_16: 5478080684940603376
+      Inf_Button_17: -5432624515080792355
+      Inf_Button_18: 1779069548491249836
+      Inf_Button_19: -2559726221682075975
+      Inf_Button_2: -987540721462151450
+      Inf_Button_3: -4362768246703781052
+      Inf_Button_4: 1998191077445625757
+      Inf_Button_5: 4810110699403939186
+      Inf_Button_6: 8750225660886914601
+      Inf_Button_7: 5463945079439117047
+      Inf_Button_8: 5026864990630251560
+      Inf_Button_9: 8883091444140687265
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
