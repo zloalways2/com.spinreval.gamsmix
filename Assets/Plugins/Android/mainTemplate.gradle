@@ -25,13 +25,15 @@ android {
     compileSdk **APIVERSION**
     buildToolsVersion "**BUILDTOOLS**"
 
-    // Перенесенный и исправленный блок исключений архитектур для старого Gradle:
-    packagingOptions {
-        exclude '/lib/armeabi/**'
-        exclude '/lib/mips/**'
-        exclude '/lib/mips64/**'
-        exclude '/lib/x86/**'
-        exclude '/lib/x86_64/**'
+    // Корректный синтаксис упаковки для Gradle 8.0 внутри блока android
+    packaging {
+        resources {
+            excludes += '/lib/armeabi/**'
+            excludes += '/lib/mips/**'
+            excludes += '/lib/mips64/**'
+            excludes += '/lib/x86/**'
+            excludes += '/lib/x86_64/**'
+        }
     }
 
     compileOptions {
