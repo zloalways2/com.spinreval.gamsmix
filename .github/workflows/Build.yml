@@ -3,6 +3,7 @@ name: Build
 on: push
 
 env:
+
   APP_NAME: "com.spinreval.gamsmix-release"
   
   AndroidKeystorePass: "qwerty"
