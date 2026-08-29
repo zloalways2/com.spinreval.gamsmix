@@ -6,14 +6,14 @@ apply from: '../shared/common.gradle'
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 // Android Resolver Dependencies Start
-    implementation 'androidx.annotation:annotation:1.7.1' // Assets/Plugins/AppMetrica/Editor/AppMetricaDependencies.xml:5
-    implementation 'io.appmetrica.analytics:analytics:8.1.0' // Assets/Plugins/AppMetrica/Editor/AppMetricaDependencies.xml:4
+    implementation 'androidx.annotation:annotation:1.7.1' // Assets/appmetrica/Editor/AppMetricaDependencies.xml:5
+    implementation 'io.appmetrica.analytics:analytics:8.1.0' // Assets/appmetrica/Editor/AppMetricaDependencies.xml:4
 // Android Resolver Dependencies End
 **DEPS**}
 
 // Android Resolver Exclusions Start
 android {
-  packagingOptions {
+  packaging {
       exclude ('/lib/armeabi/*' + '*')
       exclude ('/lib/mips/*' + '*')
       exclude ('/lib/mips64/*' + '*')
@@ -26,9 +26,8 @@ android {
     namespace "com.unity3d.player"
     ndkPath "**NDKPATH**"
     ndkVersion "**NDKVERSION**"
-
     compileSdk **APIVERSION**
-    buildToolsVersion = "**BUILDTOOLS**"
+    buildToolsVersion "**BUILDTOOLS**"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -42,8 +41,6 @@ android {
             abiFilters **ABIFILTERS**
             debugSymbolLevel **DEBUGSYMBOLLEVEL**
         }
-        versionCode **VERSIONCODE**
-        versionName '**VERSIONNAME**'
         consumerProguardFiles 'proguard-unity.txt'**USER_PROGUARD**
 **DEFAULT_CONFIG_SETUP**
     }
