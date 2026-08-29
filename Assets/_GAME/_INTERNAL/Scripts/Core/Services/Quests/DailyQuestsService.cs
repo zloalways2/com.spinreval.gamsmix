@@ -2,7 +2,6 @@
 using Core.Data.Quests;
 using Core.Gameplay;
 using Core.Services.Player;
-using Core.SO;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

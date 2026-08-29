@@ -358,8 +358,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: amount
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 58fa135c5e2af7b41a71dd4137cfde3f, type: 2}
-  m_sharedMaterial: {fileID: -1055168013032475237, guid: 58fa135c5e2af7b41a71dd4137cfde3f, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: e2bea22e4cd0be744ad55d3b50b98362, type: 2}
+  m_sharedMaterial: {fileID: -5588476107432022801, guid: e2bea22e4cd0be744ad55d3b50b98362, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -394,23 +394,20 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
-  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
-  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
-  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -548,7 +545,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 7405455482256035863}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -1009,8 +1006,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Spin 10 Reels
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 58fa135c5e2af7b41a71dd4137cfde3f, type: 2}
-  m_sharedMaterial: {fileID: -1055168013032475237, guid: 58fa135c5e2af7b41a71dd4137cfde3f, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: e2bea22e4cd0be744ad55d3b50b98362, type: 2}
+  m_sharedMaterial: {fileID: -5588476107432022801, guid: e2bea22e4cd0be744ad55d3b50b98362, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1045,23 +1042,20 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
-  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
-  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
-  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
