@@ -44,11 +44,11 @@ jobs:
         run: echo "::set-output name=encoding::$(base64 -w 0 ${{ github.workspace }}/user.keystore)"
 
       - name: Build APK
-        uses: game-ci/unity-builder@v2.1.2
+        uses: game-ci/unity-builder@v4
         with:
-          customImage: 'unityci/editor:2022.3.62f3-android-3'
+          customImage: 'unityci/editor:6000.4.4f1-android-3'
           buildName: ${{ env.APP_NAME }}
-          androidAppBundle: false
+          androidExportType: 'androidPackage'
           androidKeystoreName: user.keystore
           androidKeystoreBase64: ${{ steps.encode_keystore.outputs.encoding }}
           androidKeystorePass: ${{ env.AndroidKeystorePass }}
@@ -86,11 +86,11 @@ jobs:
         run: echo "::set-output name=encoding::$(base64 -w 0 ${{ github.workspace }}/user.keystore)"
 
       - name: Build AAB
-        uses: game-ci/unity-builder@v2.1.2
+        uses: game-ci/unity-builder@v4
         with:
-          customImage: 'unityci/editor:2022.3.62f3-android-3'
+          customImage: 'unityci/editor:6000.4.4f1-android-3'
           buildName: ${{ env.APP_NAME }}
-          androidAppBundle: true
+          androidExportType: 'androidAppBundle'
           androidVersionCode: 1
           androidKeystoreName: user.keystore
           androidKeystoreBase64: ${{ steps.encode_keystore.outputs.encoding }}

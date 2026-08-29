@@ -5,42 +5,6 @@ EditorUserSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 4
   m_ConfigSettings:
-    QuickInstaller_com.unity.purchasing_installRecorded:
-      value: 2550581500
-      flags: 0
-    QuickInstaller_com.unity.services.levelplay_installRecorded:
-      value: 2550581500
-      flags: 0
-    RecentlyUsedSceneGuid-0:
-      value: 0000565e070d5f5a5c0b5b7515225d441015487b7f2b76632f284b6ae0b9616a
-      flags: 0
-    RecentlyUsedSceneGuid-1:
-      value: 5654065604505c0b5b5b087416755944104f4e7f782b7f32787c4e64e7b8606e
-      flags: 0
-    RecentlyUsedSceneGuid-2:
-      value: 005756525704595d585859204470594413154c7a7c2b75352e784b63b6b06360
-      flags: 0
-    RecentlyUsedSceneGuid-3:
-      value: 53040455070350090e565a7440700c44431549797c7972342b2c4c65b0b8316e
-      flags: 0
-    RecentlyUsedSceneGuid-4:
-      value: 5b00575051505f0f5e0d557142745a4441151e7e282e2764757e4e61b6b03069
-      flags: 0
-    RecentlyUsedSceneGuid-5:
-      value: 5405050751560a585d085e2345720f44454e1c2f797920342f7d1f62e3b9313a
-      flags: 0
-    RecentlyUsedSceneGuid-6:
-      value: 5703525f54560d0a0f575c76457a0744134f4e722f2a7465297f4536b0b96169
-      flags: 0
-    RecentlyUsedSceneGuid-7:
-      value: 000603535d0550025a5655211620064417154e7e7f2e7735797a1b35b2e63660
-      flags: 0
-    RecentlyUsedSceneGuid-8:
-      value: 005002020702590d5d0b5b2748710d4415151b2e2f7122327e7f4e64b5b6636a
-      flags: 0
-    RecentlyUsedSceneGuid-9:
-      value: 5b520d0503545b0d0c0c0a2715770748154f4d2c7d7d7e627a7d4a35b4e1646a
-      flags: 0
     vcSharedLogLevel:
       value: 0d5e400f0650
       flags: 0
@@ -49,7 +13,7 @@ EditorUserSettings:
   m_VCDebugCmd: 0
   m_VCDebugOut: 0
   m_SemanticMergeMode: 2
-  m_DesiredImportWorkerCount: 3
+  m_DesiredImportWorkerCount: 7
   m_StandbyImportWorkerCount: 2
   m_IdleImportWorkerShutdownDelay: 60000
   m_VCShowFailedCheckout: 1
@@ -60,3 +24,4 @@ EditorUserSettings:
   m_VCAllowAsyncUpdate: 1
   m_VCScanLocalPackagesOnConnect: 1
   m_ArtifactGarbageCollection: 1
+  m_CompressAssetsOnImport: 1

@@ -1,50 +1,34 @@
 apply plugin: 'com.android.library'
-
-// Безопасное подключение скриптов Unity для CI
-if (file('../shared/keepUnitySymbols.gradle').exists()) {
-    apply from: '../shared/keepUnitySymbols.gradle'
-}
-if (file('../shared/common.gradle').exists()) {
-    apply from: '../shared/common.gradle'
-}
-
+apply from: '../shared/keepUnitySymbols.gradle'
+apply from: '../shared/common.gradle'
 **APPLY_PLUGINS**
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 // Android Resolver Dependencies Start
-    implementation 'androidx.annotation:annotation:1.7.1' // Assets/appmetrica/Editor/AppMetricaDependencies.xml:5
-    implementation 'io.appmetrica.analytics:analytics:8.1.0' // Assets/appmetrica/Editor/AppMetricaDependencies.xml:4
+    implementation 'androidx.annotation:annotation:1.7.1' // Assets/Plugins/AppMetrica/Editor/AppMetricaDependencies.xml:5
+    implementation 'io.appmetrica.analytics:analytics:8.1.0' // Assets/Plugins/AppMetrica/Editor/AppMetricaDependencies.xml:4
 // Android Resolver Dependencies End
 **DEPS**}
 
+// Android Resolver Exclusions Start
+android {
+  packaging {
+      exclude ('/lib/armeabi/*' + '*')
+      exclude ('/lib/mips/*' + '*')
+      exclude ('/lib/mips64/*' + '*')
+      exclude ('/lib/x86/*' + '*')
+      exclude ('/lib/x86_64/*' + '*')
+  }
+}
+// Android Resolver Exclusions End
 android {
     namespace "com.unity3d.player"
     ndkPath "**NDKPATH**"
     ndkVersion "**NDKVERSION**"
-    compileSdk **APIVERSION**
-    buildToolsVersion "**BUILDTOOLS**"
 
-    // Универсальный блок исключений архитектур, совместимый со всеми версиями Gradle (и старыми, и новыми)
-    if (respondTo("packaging")) {
-        packaging {
-            resources {
-                excludes += '/lib/armeabi/**'
-                excludes += '/lib/mips/**'
-                excludes += '/lib/mips64/**'
-                excludes += '/lib/x86/**'
-                excludes += '/lib/x86_64/**'
-            }
-        }
-    } else {
-        packagingOptions {
-            exclude '/lib/armeabi/**'
-            exclude '/lib/mips/**'
-            exclude '/lib/mips64/**'
-            exclude '/lib/x86/**'
-            exclude '/lib/x86_64/**'
-        }
-    }
+    compileSdk **APIVERSION**
+    buildToolsVersion = "**BUILDTOOLS**"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -58,6 +42,8 @@ android {
             abiFilters **ABIFILTERS**
             debugSymbolLevel **DEBUGSYMBOLLEVEL**
         }
+        versionCode **VERSIONCODE**
+        versionName '**VERSIONNAME**'
         consumerProguardFiles 'proguard-unity.txt'**USER_PROGUARD**
 **DEFAULT_CONFIG_SETUP**
     }
