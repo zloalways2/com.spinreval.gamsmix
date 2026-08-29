@@ -25,14 +25,24 @@ android {
     compileSdk **APIVERSION**
     buildToolsVersion "**BUILDTOOLS**"
 
-    // Корректный синтаксис упаковки для Gradle 8.0 внутри блока android
-    packaging {
-        resources {
-            excludes += '/lib/armeabi/**'
-            excludes += '/lib/mips/**'
-            excludes += '/lib/mips64/**'
-            excludes += '/lib/x86/**'
-            excludes += '/lib/x86_64/**'
+    // Универсальный блок исключений архитектур, совместимый со всеми версиями Gradle (и старыми, и новыми)
+    if (respondTo("packaging")) {
+        packaging {
+            resources {
+                excludes += '/lib/armeabi/**'
+                excludes += '/lib/mips/**'
+                excludes += '/lib/mips64/**'
+                excludes += '/lib/x86/**'
+                excludes += '/lib/x86_64/**'
+            }
+        }
+    } else {
+        packagingOptions {
+            exclude '/lib/armeabi/**'
+            exclude '/lib/mips/**'
+            exclude '/lib/mips64/**'
+            exclude '/lib/x86/**'
+            exclude '/lib/x86_64/**'
         }
     }
 
