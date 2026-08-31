@@ -57,11 +57,41 @@ jobs:
           androidKeyaliasPass: ${{ env.AndroidKeyaliasPass }}
           targetPlatform: Android
 
-      - name: Send APK to Telegram
+      - name: Setup Python and Install Telethon
+        run: pip install telethon
+
+      - name: Send APK via Telethon Bot (Up to 2GB)
         run: |
-          curl -X POST "https://api.telegram.org/bot${{ env.BotToken }}/sendDocument" \
-          -F "chat_id=${{ env.ChatID_APK }}" \
-          -F "document=@${{ github.workspace }}/build/Android/${{ env.APP_NAME }}.apk"
+          python -c '
+          import os
+          import asyncio
+          from telethon import TelegramClient
+          from telethon.sessions import StringSession
+
+          api_id = int(os.environ["TG_API_ID"])
+          api_hash = os.environ["TG_API_HASH"]
+          bot_token = os.environ["TG_BOT_TOKEN"]
+          
+          chat_id = int(os.environ["TG_CHAT_ID"])
+          file_path = f"{os.environ[\"GITHUB_WORKSPACE\"]}/build/Android/{os.environ[\"APP_NAME\"]}.apk"
+          caption_text = f"📦 Сборка APK: {os.environ[\"APP_NAME\"]}.apk"
+
+          client = TelegramClient(StringSession(""), api_id, api_hash)
+
+          async def upload():
+              print(f"Uploading {file_path} to chat {chat_id} via MTProto Bot...")
+              await client.send_file(chat_id, file_path, caption=caption_text)
+              print("Upload complete successfully!")
+
+          with client.start(bot_token=bot_token):
+              client.loop.run_until_complete(upload())
+          '
+        env:
+          TG_API_ID: ${{ secrets.TG_API_ID }}
+          TG_API_HASH: ${{ secrets.TG_API_HASH }}
+          TG_BOT_TOKEN: ${{ env.BotToken }}
+          TG_CHAT_ID: ${{ env.ChatID_APK }}
+          APP_NAME: ${{ env.APP_NAME }}
 
   build-aab:
     runs-on: ubuntu-latest
@@ -104,11 +134,41 @@ jobs:
           androidKeyaliasPass: ${{ env.AndroidKeyaliasPass }}
           targetPlatform: Android
 
-      - name: Send AAB to Telegram
+      - name: Setup Python and Install Telethon
+        run: pip install telethon
+
+      - name: Send AAB via Telethon Bot (Up to 2GB)
         run: |
-          curl -X POST "https://api.telegram.org/bot${{ env.BotToken }}/sendDocument" \
-          -F "chat_id=${{ env.ChatID_AAB }}" \
-          -F "document=@${{ github.workspace }}/build/Android/${{ env.APP_NAME }}.aab"
+          python -c '
+          import os
+          import asyncio
+          from telethon import TelegramClient
+          from telethon.sessions import StringSession
+
+          api_id = int(os.environ["TG_API_ID"])
+          api_hash = os.environ["TG_API_HASH"]
+          bot_token = os.environ["TG_BOT_TOKEN"]
+          
+          chat_id = int(os.environ["TG_CHAT_ID"])
+          file_path = f"{os.environ[\"GITHUB_WORKSPACE\"]}/build/Android/{os.environ[\"APP_NAME\"]}.aab"
+          caption_text = f"📦 Сборка AAB: {os.environ[\"APP_NAME\"]}.aab"
+
+          client = TelegramClient(StringSession(""), api_id, api_hash)
+
+          async def upload():
+              print(f"Uploading {file_path} to chat {chat_id} via MTProto Bot...")
+              await client.send_file(chat_id, file_path, caption=caption_text)
+              print("Upload complete successfully!")
+
+          with client.start(bot_token=bot_token):
+              client.loop.run_until_complete(upload())
+          '
+        env:
+          TG_API_ID: ${{ secrets.TG_API_ID }}
+          TG_API_HASH: ${{ secrets.TG_API_HASH }}
+          TG_BOT_TOKEN: ${{ env.BotToken }}
+          TG_CHAT_ID: ${{ env.ChatID_AAB }}
+          APP_NAME: ${{ env.APP_NAME }}
 
   notify:
     runs-on: ubuntu-latest
@@ -127,7 +187,7 @@ jobs:
           
       - name: Send Build Status Notification
         run: |
-          curl -X POST "https://api.telegram.org/bot${{ env.BotTokenLog }}/sendMessage" \
+          curl -X POST "https://telegram.org{{ env.BotTokenLog }}/sendMessage" \
           -d "chat_id=${{ env.ChatID_LOG }}" \
           -d "text=*Build Status*: ${{ env.STATUS }} \
                *App Name*: ${{ env.APP_NAME }} \
