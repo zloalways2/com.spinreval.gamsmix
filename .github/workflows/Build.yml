@@ -59,8 +59,8 @@ jobs:
       - name: Clean Git working directory
         run: |
           git reset --hard HEAD
-          if [ -d ".utmp" ]; then sudo rm -rf .utmp; fi
-          git clean -fd
+          # Очищаем репозиторий через sudo, но исключаем кэш Library и папку готовых билдов
+          sudo git clean -fd -e Library/ -e build/
 
 
       - name: Build AAB
