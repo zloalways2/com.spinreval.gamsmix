@@ -59,7 +59,8 @@ jobs:
       - name: Clean Git working directory
         run: |
           git reset --hard HEAD
-          sudo git clean -xdf
+          if [ -d ".utmp" ]; then sudo rm -rf .utmp; fi
+          git clean -fd
 
 
       - name: Build AAB
