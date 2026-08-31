@@ -3,7 +3,6 @@ name: Build
 on: push
 
 env:
-
   APP_NAME: "com.spinreval.gamsmix-release"
   
   AndroidKeystorePass: "qwerty"
@@ -17,7 +16,7 @@ env:
   BotTokenLog: "7014683250:AAECtvRo7m_b0CX8jzIXEe_GaqTg9OGSyTQ"
 
 jobs:
-  build-apk:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Free up Github Actions disk space
@@ -57,69 +56,6 @@ jobs:
           androidKeyaliasPass: ${{ env.AndroidKeyaliasPass }}
           targetPlatform: Android
 
-      - name: Setup Python and Install Telethon
-        run: pip install telethon
-
-      - name: Send APK via Telethon Bot (Up to 2GB)
-        run: |
-          python << 'EOF'
-          import os
-          import asyncio
-          from telethon import TelegramClient
-          from telethon.sessions import StringSession
-
-          api_id = int(os.environ["TG_API_ID"])
-          api_hash = os.environ["TG_API_HASH"]
-          bot_token = os.environ["TG_BOT_TOKEN"]
-          chat_id = int(os.environ["TG_CHAT_ID"])
-          
-          # Получаем переменные и собираем путь без экранирования кавычек
-          workspace = os.environ["GITHUB_WORKSPACE"]
-          app_name = os.environ["APP_NAME"]
-          file_path = f"{workspace}/build/Android/{app_name}.apk"
-          caption_text = f"📦 Сборка APK: {app_name}.apk"
-
-          client = TelegramClient(StringSession(""), api_id, api_hash)
-
-          async def upload():
-              print(f"Uploading {file_path} to chat {chat_id} via MTProto Bot...")
-              await client.send_file(chat_id, file_path, caption=caption_text)
-              print("Upload complete successfully!")
-
-          with client.start(bot_token=bot_token):
-              client.loop.run_until_complete(upload())
-          EOF
-        env:
-          TG_API_ID: ${{ secrets.TG_API_ID }}
-          TG_API_HASH: ${{ secrets.TG_API_HASH }}
-          TG_BOT_TOKEN: ${{ env.BotToken }}
-          TG_CHAT_ID: ${{ env.ChatID_APK }}
-          APP_NAME: ${{ env.APP_NAME }}
-
-
-  build-aab:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Free up Github Actions disk space
-        run: |
-          echo "Removing preinstalled software to free space..."
-          sudo rm -rf /usr/local/lib/android
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /usr/local/share/powershell
-          sudo rm -rf /usr/local/share/chromium
-          sudo rm -rf /opt/ghc
-          sudo rm -rf $AGENT_TOOLSDIRECTORY
-          sudo docker system prune -af --volumes
-          sudo apt-get clean
-          df -h
-
-      - name: Checkout
-        uses: actions/checkout@v2.4.2
-
-      - name: Encode keystore to base64
-        id: encode_keystore
-        run: echo "::set-output name=encoding::$(base64 -w 0 ${{ github.workspace }}/user.keystore)"
-
       - name: Build AAB
         uses: game-ci/unity-builder@v4
         env:
@@ -141,7 +77,7 @@ jobs:
       - name: Setup Python and Install Telethon
         run: pip install telethon
 
-      - name: Send AAB via Telethon Bot (Up to 2GB)
+      - name: Send APK and AAB together as Album (Up to 2GB)
         run: |
           python << 'EOF'
           import os
@@ -156,15 +92,21 @@ jobs:
           
           workspace = os.environ["GITHUB_WORKSPACE"]
           app_name = os.environ["APP_NAME"]
-          file_path = f"{workspace}/build/Android/{app_name}.aab"
-          caption_text = f"📦 Сборка AAB: {app_name}.aab"
+          
+          # Формируем пути к обоим файлам
+          apk_path = f"{workspace}/build/Android/{app_name}.apk"
+          aab_path = f"{workspace}/build/Android/{app_name}.aab"
+          
+          # Единый текст подписи под альбомом
+          caption_text = f"🚀 *Новая сборка готова!*\n📦 *App Name:* `{app_name}`\n\nВложенные файлы: APK и AAB."
 
           client = TelegramClient(StringSession(""), api_id, api_hash)
 
           async def upload():
-              print(f"Uploading {file_path} to chat {chat_id} via MTProto Bot...")
-              await client.send_file(chat_id, file_path, caption=caption_text)
-              print("Upload complete successfully!")
+              print("Uploading APK and AAB as an album via MTProto Bot...")
+              # Передаем файлы списком [apk, aab]. Подпись крепится к первому объекту
+              await client.send_file(chat_id, [apk_path, aab_path], caption=caption_text, parse_mode='markdown')
+              print("Album upload completed successfully!")
 
           with client.start(bot_token=bot_token):
               client.loop.run_until_complete(upload())
@@ -173,31 +115,24 @@ jobs:
           TG_API_ID: ${{ secrets.TG_API_ID }}
           TG_API_HASH: ${{ secrets.TG_API_HASH }}
           TG_BOT_TOKEN: ${{ env.BotToken }}
-          TG_CHAT_ID: ${{ env.ChatID_AAB }}
+          TG_CHAT_ID: ${{ env.ChatID_Media }}
           APP_NAME: ${{ env.APP_NAME }}
-
-
 
   notify:
     runs-on: ubuntu-latest
-    needs: [build-apk, build-aab]
+    needs: build
     if: always()
     steps:
       - name: Set Build Status
         run: |
-          if [ "${{ needs.build-apk.result }}" == "success" ] && [ "${{ needs.build-aab.result }}" == "success" ]; then
+          if [ "${{ needs.build.result }}" == "success" ]; then
             echo "STATUS=✅ Успешно" >> $GITHUB_ENV
-          elif [ "${{ needs.build-apk.result }}" == "failure" ] || [ "${{ needs.build-aab.result }}" == "failure" ]; then
-            echo "STATUS=❌ Ошибка" >> $GITHUB_ENV
           else
-            echo "STATUS=⚠️ Завершено с предупреждениями" >> $GITHUB_ENV
+            echo "STATUS=❌ Ошибка" >> $GITHUB_ENV
           fi
           
       - name: Send Build Status Notification
         run: |
-          curl -X POST "https://telegram.org{{ env.BotTokenLog }}/sendMessage" \
+          curl -X POST "https://api.telegram.org/bot${{ env.BotTokenLog }}/sendMessage" \
           -d "chat_id=${{ env.ChatID_LOG }}" \
-          -d "text=*Build Status*: ${{ env.STATUS }} \
-               *App Name*: ${{ env.APP_NAME }} \
-               *Triggered By*: ${{ github.actor }} \
-               *Logs*: [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+          -d "text=*Build Status*: ${{ env.STATUS }} %0A*App Name*: ${{ env.APP_NAME }} %0A*Triggered By*: ${{ github.actor }} %0A*Logs*: [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
