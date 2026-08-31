@@ -62,7 +62,7 @@ jobs:
 
       - name: Send APK via Telethon Bot (Up to 2GB)
         run: |
-          python -c '
+          python << 'EOF'
           import os
           import asyncio
           from telethon import TelegramClient
@@ -71,10 +71,13 @@ jobs:
           api_id = int(os.environ["TG_API_ID"])
           api_hash = os.environ["TG_API_HASH"]
           bot_token = os.environ["TG_BOT_TOKEN"]
-          
           chat_id = int(os.environ["TG_CHAT_ID"])
-          file_path = f"{os.environ[\"GITHUB_WORKSPACE\"]}/build/Android/{os.environ[\"APP_NAME\"]}.apk"
-          caption_text = f"📦 Сборка APK: {os.environ[\"APP_NAME\"]}.apk"
+          
+          # Получаем переменные и собираем путь без экранирования кавычек
+          workspace = os.environ["GITHUB_WORKSPACE"]
+          app_name = os.environ["APP_NAME"]
+          file_path = f"{workspace}/build/Android/{app_name}.apk"
+          caption_text = f"📦 Сборка APK: {app_name}.apk"
 
           client = TelegramClient(StringSession(""), api_id, api_hash)
 
@@ -85,13 +88,14 @@ jobs:
 
           with client.start(bot_token=bot_token):
               client.loop.run_until_complete(upload())
-          '
+          EOF
         env:
           TG_API_ID: ${{ secrets.TG_API_ID }}
           TG_API_HASH: ${{ secrets.TG_API_HASH }}
           TG_BOT_TOKEN: ${{ env.BotToken }}
           TG_CHAT_ID: ${{ env.ChatID_APK }}
           APP_NAME: ${{ env.APP_NAME }}
+
 
   build-aab:
     runs-on: ubuntu-latest
@@ -139,7 +143,7 @@ jobs:
 
       - name: Send AAB via Telethon Bot (Up to 2GB)
         run: |
-          python -c '
+          python << 'EOF'
           import os
           import asyncio
           from telethon import TelegramClient
@@ -148,10 +152,12 @@ jobs:
           api_id = int(os.environ["TG_API_ID"])
           api_hash = os.environ["TG_API_HASH"]
           bot_token = os.environ["TG_BOT_TOKEN"]
-          
           chat_id = int(os.environ["TG_CHAT_ID"])
-          file_path = f"{os.environ[\"GITHUB_WORKSPACE\"]}/build/Android/{os.environ[\"APP_NAME\"]}.aab"
-          caption_text = f"📦 Сборка AAB: {os.environ[\"APP_NAME\"]}.aab"
+          
+          workspace = os.environ["GITHUB_WORKSPACE"]
+          app_name = os.environ["APP_NAME"]
+          file_path = f"{workspace}/build/Android/{app_name}.aab"
+          caption_text = f"📦 Сборка AAB: {app_name}.aab"
 
           client = TelegramClient(StringSession(""), api_id, api_hash)
 
@@ -162,13 +168,15 @@ jobs:
 
           with client.start(bot_token=bot_token):
               client.loop.run_until_complete(upload())
-          '
+          EOF
         env:
           TG_API_ID: ${{ secrets.TG_API_ID }}
           TG_API_HASH: ${{ secrets.TG_API_HASH }}
           TG_BOT_TOKEN: ${{ env.BotToken }}
           TG_CHAT_ID: ${{ env.ChatID_AAB }}
           APP_NAME: ${{ env.APP_NAME }}
+
+
 
   notify:
     runs-on: ubuntu-latest
