@@ -56,11 +56,11 @@ jobs:
           androidKeyaliasPass: ${{ env.AndroidKeyaliasPass }}
           targetPlatform: Android
 
-      # === ОЧИСТКА GIT ПЕРЕД СБОРКОЙ AAB (Решает ошибку Branch is dirty) ===
       - name: Clean Git working directory
         run: |
           git reset --hard HEAD
-          git clean -fd
+          sudo git clean -xdf
+
 
       - name: Build AAB
         uses: game-ci/unity-builder@v4
