@@ -101,19 +101,12 @@ jobs:
           
           apk_path = f"{workspace}/build/Android/{app_name}.apk"
           aab_path = f"{workspace}/build/Android/{app_name}.aab"
-          
-          # Минималистичный текст в HTML формате
-          caption_text = (
-              "🚀 <b>Новая сборка:</b>\n"
-              "• APK\n"
-              "• AAB"
-          )
 
           client = TelegramClient(StringSession(""), api_id, api_hash)
 
           async def upload():
               print("Uploading APK and AAB as an album via MTProto Bot...")
-              await client.send_file(chat_id, [apk_path, aab_path], caption=caption_text, parse_mode='html')
+              await client.send_file(chat_id, [apk_path, aab_path], caption='', parse_mode='html')
               print("Album upload completed successfully!")
 
           with client.start(bot_token=bot_token):
