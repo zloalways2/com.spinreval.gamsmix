@@ -122,7 +122,7 @@ jobs:
           TG_API_ID: ${{ secrets.TG_API_ID }}
           TG_API_HASH: ${{ secrets.TG_API_HASH }}
           TG_BOT_TOKEN: ${{ env.BotToken }}
-          TG_CHAT_ID: ${{ env.ChatID_Media }}
+          TG_CHAT_ID: ${{ env.ChatID_APK }}
           APP_NAME: ${{ env.APP_NAME }}
 
   notify:
