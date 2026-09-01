@@ -102,7 +102,7 @@ jobs:
           apk_path = f"{workspace}/build/Android/{app_name}.apk"
           aab_path = f"{workspace}/build/Android/{app_name}.aab"
           
-          # Минималистичный текст без лишнего шума
+          # Минималистичный текст в HTML формате
           caption_text = (
               "🚀 <b>Новая сборка:</b>\n"
               "• APK\n"
@@ -119,6 +119,13 @@ jobs:
           with client.start(bot_token=bot_token):
               client.loop.run_until_complete(upload())
           EOF
+        env:
+          TG_API_ID: ${{ secrets.TG_API_ID }}
+          TG_API_HASH: ${{ secrets.TG_API_HASH }}
+          TG_BOT_TOKEN: ${{ env.BotToken }}
+          TG_CHAT_ID: ${{ env.TG_CHAT_ID }}
+          APP_NAME: ${{ env.APP_NAME }}
+
 
 
   notify:
