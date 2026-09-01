@@ -9,8 +9,7 @@ env:
   AndroidKeyaliasPass: "qwerty"
   AndroidKeyaliasName: "qwerty"
   
-  ChatID_APK: "-1003810793512"
-  ChatID_AAB: "-1003810793512"
+  TG_CHAT_ID: "-1003810793512"
   ChatID_LOG: "5419377045"
   BotToken: "8979603664:AAEiC0c56g5uNg-WVL7JcpGbw_8ysgV2y40"
   BotTokenLog: "7014683250:AAECtvRo7m_b0CX8jzIXEe_GaqTg9OGSyTQ"
@@ -100,30 +99,27 @@ jobs:
           workspace = os.environ["GITHUB_WORKSPACE"]
           app_name = os.environ["APP_NAME"]
           
-          # Формируем пути к обоим файлам
           apk_path = f"{workspace}/build/Android/{app_name}.apk"
           aab_path = f"{workspace}/build/Android/{app_name}.aab"
           
-          # Единый текст подписи под альбомом
-          caption_text = f"🚀 *Новая сборка готова!*\n📦 *App Name:* `{app_name}`\n\nВложенные файлы: APK и AAB."
+          # Минималистичный текст без лишнего шума
+          caption_text = (
+              "🚀 <b>Новая сборка:</b>\n"
+              "• APK\n"
+              "• AAB"
+          )
 
           client = TelegramClient(StringSession(""), api_id, api_hash)
 
           async def upload():
               print("Uploading APK and AAB as an album via MTProto Bot...")
-              # Передаем файлы списком [apk, aab]. Подпись крепится к первому объекту
-              await client.send_file(chat_id, [apk_path, aab_path], caption=caption_text, parse_mode='markdown')
+              await client.send_file(chat_id, [apk_path, aab_path], caption=caption_text, parse_mode='html')
               print("Album upload completed successfully!")
 
           with client.start(bot_token=bot_token):
               client.loop.run_until_complete(upload())
           EOF
-        env:
-          TG_API_ID: ${{ secrets.TG_API_ID }}
-          TG_API_HASH: ${{ secrets.TG_API_HASH }}
-          TG_BOT_TOKEN: ${{ env.BotToken }}
-          TG_CHAT_ID: ${{ env.ChatID_APK }}
-          APP_NAME: ${{ env.APP_NAME }}
+
 
   notify:
     runs-on: ubuntu-latest
