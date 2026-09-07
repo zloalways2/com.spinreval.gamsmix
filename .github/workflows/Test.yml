@@ -1,0 +1,83 @@
+name: Test
+
+on: push
+
+env:
+  TG_CHAT_ID: "-1003810793512"
+  BotToken: "8979603664:AAEiC0c56g5uNg-WVL7JcpGbw_8ysgV2y40"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python and Install Telethon
+        run: pip install telethon
+
+      - name: Send files to Telegram
+        run: |
+          python << 'EOF'
+          import os
+          import asyncio
+          from telethon import TelegramClient
+          from telethon.sessions import StringSession
+
+          api_id = int(os.environ["TG_API_ID"])
+          api_hash = os.environ["TG_API_HASH"]
+          bot_token = os.environ["TG_BOT_TOKEN"]
+          chat_id = int(os.environ["TG_CHAT_ID"])
+
+          workspace = os.environ["GITHUB_WORKSPACE"]
+
+          # Пути к файлам
+          app_info_path = os.path.join(workspace, "appinfo.txt")
+
+          txt_paths = [
+              os.path.join(workspace, "1.txt"),
+              os.path.join(workspace, "2.txt"),
+              os.path.join(workspace, "3.txt")
+          ]
+
+          # Читаем текст из appinfo.txt
+          with open(app_info_path, "r", encoding="utf-8") as f:
+              caption = f.read().strip()
+
+          print("Caption:")
+          print(caption)
+
+          print("Files:")
+          for path in txt_paths:
+              print(path)
+
+          client = TelegramClient(
+              StringSession(""),
+              api_id,
+              api_hash
+          )
+
+          async def upload():
+              await client.send_file(
+                  chat_id,
+                  txt_paths,
+                  caption=caption,
+                  parse_mode="html"
+              )
+
+              print("Files uploaded successfully!")
+
+          async def main():
+              await client.start(bot_token=bot_token)
+              await upload()
+              await client.disconnect()
+
+          asyncio.run(main())
+          EOF
+
+        env:
+          TG_API_ID: ${{ secrets.TG_API_ID }}
+          TG_API_HASH: ${{ secrets.TG_API_HASH }}
+          TG_BOT_TOKEN: ${{ env.BotToken }}
+          TG_CHAT_ID: ${{ env.TG_CHAT_ID }}

@@ -1,0 +1,11 @@
+Unity
+
+RevalMix Fun Games
+com.spinreval.gamsmix
+v1.0
+
+Start.io: 206683481
+AppMetrica: com.spinreval.gamsmix
+32e9a816-0394-4115-ac04-ecd60f9bebea
+
+Figma: https://www.figma.com/design/48Cd8EQcxvsz07DLVEA5Ng/RevalMix-FunGames?node-id=0-1&p=f&t=NBKhnN1pUPVyKEPw-0
