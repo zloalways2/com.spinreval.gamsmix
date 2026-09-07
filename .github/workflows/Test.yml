@@ -17,13 +17,40 @@ jobs:
       - name: Setup Python and Install Telethon
         run: pip install telethon
 
+      - name: Check test files
+        run: |
+          echo "=== Files ==="
+
+          for file in appinfo.txt 1.txt 2.txt 3.txt; do
+            if [ ! -f "$file" ]; then
+              echo "ERROR: $file not found!"
+              exit 1
+            fi
+
+            SIZE=$(wc -c < "$file")
+
+            echo "$file: ${SIZE} bytes"
+
+            if [ "$SIZE" -eq 0 ]; then
+              echo "ERROR: $file is empty!"
+              exit 1
+            fi
+          done
+
+          echo "================"
+
       - name: Send files to Telegram
         run: |
           python << 'EOF'
           import os
           import asyncio
+
           from telethon import TelegramClient
           from telethon.sessions import StringSession
+
+          # ---------------------------------------
+          # Telegram settings
+          # ---------------------------------------
 
           api_id = int(os.environ["TG_API_ID"])
           api_hash = os.environ["TG_API_HASH"]
@@ -32,33 +59,25 @@ jobs:
 
           workspace = os.environ["GITHUB_WORKSPACE"]
 
-          # appinfo.txt
+          # ---------------------------------------
+          # Files
+          # ---------------------------------------
+
           app_info_path = os.path.join(
               workspace,
               "appinfo.txt"
           )
 
-          # Файлы для отправки
           txt_paths = [
               os.path.join(workspace, "1.txt"),
               os.path.join(workspace, "2.txt"),
               os.path.join(workspace, "3.txt")
           ]
 
-          # Проверяем appinfo.txt
-          if not os.path.exists(app_info_path):
-              raise FileNotFoundError(
-                  f"appinfo.txt not found: {app_info_path}"
-              )
+          # ---------------------------------------
+          # Read appinfo.txt
+          # ---------------------------------------
 
-          # Проверяем файлы
-          for path in txt_paths:
-              if not os.path.exists(path):
-                  raise FileNotFoundError(
-                      f"File not found: {path}"
-                  )
-
-          # Читаем appinfo.txt
           with open(
               app_info_path,
               "r",
@@ -66,12 +85,32 @@ jobs:
           ) as f:
               caption = f.read().strip()
 
-          print("App info:")
+          print()
+          print("========== APP INFO ==========")
           print(caption)
+          print("==============================")
+          print()
 
-          print("Files:")
+          # ---------------------------------------
+          # Check files
+          # ---------------------------------------
+
+          print("========== FILES ==========")
+
           for path in txt_paths:
-              print(path)
+              size = os.path.getsize(path)
+
+              print(
+                  f"{os.path.basename(path)}: "
+                  f"{size} bytes"
+              )
+
+          print("===========================")
+          print()
+
+          # ---------------------------------------
+          # Telegram client
+          # ---------------------------------------
 
           client = TelegramClient(
               StringSession(""),
@@ -80,27 +119,26 @@ jobs:
           )
 
           async def main():
+
               await client.start(
                   bot_token=bot_token
               )
 
-              # Отправляем содержимое appinfo.txt
-              # отдельным сообщением
-              await client.send_message(
-                  chat_id,
-                  caption
-              )
+              # -----------------------------------
+              # Send all 3 files as ONE album
+              # appinfo.txt = album caption
+              # -----------------------------------
 
-              print("App info sent successfully!")
-
-              # Отправляем 1.txt, 2.txt и 3.txt
-              # одним альбомом
               await client.send_file(
                   chat_id,
-                  txt_paths
+                  txt_paths,
+                  caption=caption,
+                  parse_mode=None
               )
 
-              print("Files uploaded successfully!")
+              print(
+                  "Album uploaded successfully!"
+              )
 
               await client.disconnect()
 
