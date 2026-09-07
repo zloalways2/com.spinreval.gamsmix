@@ -32,20 +32,41 @@ jobs:
 
           workspace = os.environ["GITHUB_WORKSPACE"]
 
-          # Пути к файлам
-          app_info_path = os.path.join(workspace, "appinfo.txt")
+          # appinfo.txt
+          app_info_path = os.path.join(
+              workspace,
+              "appinfo.txt"
+          )
 
+          # Файлы для отправки
           txt_paths = [
               os.path.join(workspace, "1.txt"),
               os.path.join(workspace, "2.txt"),
               os.path.join(workspace, "3.txt")
           ]
 
-          # Читаем текст из appinfo.txt
-          with open(app_info_path, "r", encoding="utf-8") as f:
+          # Проверяем appinfo.txt
+          if not os.path.exists(app_info_path):
+              raise FileNotFoundError(
+                  f"appinfo.txt not found: {app_info_path}"
+              )
+
+          # Проверяем файлы
+          for path in txt_paths:
+              if not os.path.exists(path):
+                  raise FileNotFoundError(
+                      f"File not found: {path}"
+                  )
+
+          # Читаем appinfo.txt
+          with open(
+              app_info_path,
+              "r",
+              encoding="utf-8"
+          ) as f:
               caption = f.read().strip()
 
-          print("Caption:")
+          print("App info:")
           print(caption)
 
           print("Files:")
@@ -58,19 +79,29 @@ jobs:
               api_hash
           )
 
-          async def upload():
+          async def main():
+              await client.start(
+                  bot_token=bot_token
+              )
+
+              # Отправляем содержимое appinfo.txt
+              # отдельным сообщением
+              await client.send_message(
+                  chat_id,
+                  caption
+              )
+
+              print("App info sent successfully!")
+
+              # Отправляем 1.txt, 2.txt и 3.txt
+              # одним альбомом
               await client.send_file(
                   chat_id,
-                  txt_paths,
-                  caption=caption,
-                  parse_mode="html"
+                  txt_paths
               )
 
               print("Files uploaded successfully!")
 
-          async def main():
-              await client.start(bot_token=bot_token)
-              await upload()
               await client.disconnect()
 
           asyncio.run(main())
