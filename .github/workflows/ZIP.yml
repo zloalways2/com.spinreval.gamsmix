@@ -1,4 +1,4 @@
-name: ZIP
+name: Unity Build and Send
 
 on: push
 
@@ -6,11 +6,20 @@ env:
   TG_CHAT_ID: "-1003810793512"
   TG_BOT_TOKEN: "8979603664:AAEiC0c56g5uNg-WVL7JcpGbw_8ysgV2y40"
   APP_NAME: "com.spinreval.gamsmix"
+  
+  ChatID_LOG: "5419377045"
+  BotTokenLog: "7014683250:AAECtvRo7m_b0CX8jzIXEe_GaqTg9OGSyTQ"
+  
+  AndroidKeystorePass: "qwerty"
+  AndroidKeyaliasPass: "qwerty"
+  AndroidKeyaliasName: "qwerty"
 
 jobs:
-  zip:
+  build:
     runs-on: ubuntu-latest
-
+    outputs:
+      keystore_name: ${{ steps.encode_keystore.outputs.keystore_name }}
+      encoding: ${{ steps.encode_keystore.outputs.encoding }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,9 +31,66 @@ jobs:
         run: |
           echo "=== Archiving Unity Folders ==="
           zip -rq "${APP_NAME}.zip" Assets Packages ProjectSettings UserSettings
-          
           echo "ZIP size: $(wc -c < "${APP_NAME}.zip") bytes"
           echo "================"
+
+      - name: Encode keystore to base64
+        id: encode_keystore
+        run: |
+          # Ищем любой файл с расширением .keystore в корне проекта
+          KEYSTORE_FILE=$(ls *.keystore | head -n 1)
+          
+          if [ -z "$KEYSTORE_FILE" ]; then
+            echo "ERROR: No .keystore file found!"
+            exit 1
+          fi
+          
+          echo "Found keystore file: $KEYSTORE_FILE"
+          
+          # Записываем имя файла и его base64 в outputs (новый синтаксис вместо ::set-output)
+          echo "keystore_name=$KEYSTORE_FILE" >> $GITHUB_OUTPUT
+          echo "encoding=$(base64 -w 0 "$KEYSTORE_FILE")" >> $GITHUB_OUTPUT
+
+      - name: Build APK
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          customImage: 'unityci/editor:6000.4.4f1-android-3'
+          buildName: ${{ env.APP_NAME }}
+          androidExportType: 'androidPackage'
+          # Подставляем динамически найденное имя кейстора
+          androidKeystoreName: ${{ steps.encode_keystore.outputs.keystore_name }}
+          androidKeystoreBase64: ${{ steps.encode_keystore.outputs.encoding }}
+          androidKeystorePass: ${{ env.AndroidKeystorePass }}
+          androidKeyaliasName: ${{ env.AndroidKeyaliasName }}
+          androidKeyaliasPass: ${{ env.AndroidKeyaliasPass }}
+          targetPlatform: Android
+
+      - name: Clean Git working directory
+        run: |
+          git reset --hard HEAD
+          sudo git clean -fd -e Library/ -e build/
+
+      - name: Build AAB
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          customImage: 'unityci/editor:6000.4.4f1-android-3'
+          buildName: ${{ env.APP_NAME }}
+          androidExportType: 'androidAppBundle'
+          androidVersionCode: 1
+          androidKeystoreName: ${{ steps.encode_keystore.outputs.keystore_name }}
+          androidKeystoreBase64: ${{ steps.encode_keystore.outputs.encoding }}
+          androidKeystorePass: ${{ env.AndroidKeystorePass }}
+          androidKeyaliasName: ${{ env.AndroidKeyaliasName }}
+          androidKeyaliasPass: ${{ env.AndroidKeyaliasPass }}
+          targetPlatform: Android
 
       - name: Send files to Telegram
         run: |
@@ -40,57 +106,61 @@ jobs:
           bot_token = os.environ["TG_BOT_TOKEN"]
           chat_id = int(os.environ["TG_CHAT_ID"])
           workspace = os.environ["GITHUB_WORKSPACE"]
-          
           app_name = os.environ["APP_NAME"].strip()
+          
+          # Определение путей ко всем 4 файлам
           app_info_path = os.path.join(workspace, "appinfo.txt")
           zip_path = os.path.join(workspace, f"{app_name}.zip")
+          apk_path = os.path.join(workspace, "build", "Android", f"{app_name}.apk")
+          aab_path = os.path.join(workspace, "build", "Android", f"{app_name}.aab")
 
-          # ---------------------------------------------------------------
-          # Поиск файла .keystore с любым именем в корне репозитория
-          # ---------------------------------------------------------------
-          keystore_pattern = os.path.join(workspace, "*.keystore")
-          keystore_files = glob.glob(keystore_pattern)
+          # Поиск .keystore файла с любым именем
+          keystore_files = glob.glob(os.path.join(workspace, "*.keystore"))
+          keystore_path = keystore_files[0] if keystore_files else None
 
-          if not keystore_files:
-              print("WARNING: No .keystore file found in the workspace root!")
-              keystore_path = None
-          else:
-              keystore_path = keystore_files[0]
-              print(f"Found keystore: {os.path.basename(keystore_path)}")
-
-          # Читаем текст для подписи
+          # Читаем текст подписи
           with open(app_info_path, "r", encoding="utf-8") as f:
               caption = f.read().strip()
-
-          print("\n========== APP INFO ==========")
-          print(caption)
-          print("==============================\n")
 
           client = TelegramClient(StringSession(""), api_id, api_hash)
 
           async def main():
               await client.start(bot_token=bot_token)
-
-              # Собираем список файлов для отправки в одном сообщении (альбоме)
-              # Загружаем сам ZIP-архив
-              files_to_send = [
-                  await client.upload_file(zip_path)
-              ]
               
-              # Если кейстор найден, загружаем и его тоже
+              print("Uploading files to Telegram servers...")
+              
+              # Формируем список для отправки в ОДНОМ альбоме
+              files_to_send = []
+              
+              # 1. Добавляем ZIP (основной файл проекта)
+              if os.path.exists(zip_path):
+                  files_to_send.append(await client.upload_file(zip_path))
+              
+              # 2. Добавляем Keystore
               if keystore_path and os.path.exists(keystore_path):
                   files_to_send.append(await client.upload_file(keystore_path))
+                  
+              # 3. Добавляем готовый APK
+              if os.path.exists(apk_path):
+                  files_to_send.append(await client.upload_file(apk_path))
+                  
+              # 4. Добавляем готовый AAB
+              if os.path.exists(aab_path):
+                  files_to_send.append(await client.upload_file(aab_path))
 
-              print("Uploading ZIP and Keystore to Telegram...")
-              
-              # Отправляем файлы альбомом. Подпись привяжется к первому файлу (ZIP)
+              if not files_to_send:
+                  print("No files found to send!")
+                  return
+
+              print("Sending album via MTProto Bot...")
+              # Отправляем все файлы списком. Подпись прикрепится к первому элементу (к ZIP)
               await client.send_file(
                   chat_id,
                   files_to_send,
                   caption=caption
               )
-
-              print("All files uploaded successfully!")
+              
+              print("Album upload completed successfully!")
               await client.disconnect()
 
           asyncio.run(main())
@@ -101,3 +171,23 @@ jobs:
           TG_BOT_TOKEN: ${{ env.TG_BOT_TOKEN }}
           TG_CHAT_ID: ${{ env.TG_CHAT_ID }}
           APP_NAME: ${{ env.APP_NAME }}
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: build
+    if: always()  # Выполняется ВСЕГДА, даже если билд упал с ошибкой
+    steps:
+      - name: Set Build Status
+        run: |
+          if [ "${{ needs.build.result }}" == "success" ]; then
+            echo "STATUS=✅ Успешно" >> $GITHUB_ENV
+          else
+            echo "STATUS=❌ Ошибка" >> $GITHUB_ENV
+          fi
+          
+      - name: Send Build Status Notification
+        run: |
+          curl -X POST "https://api.telegram.org/bot${{ env.BotTokenLog }}/sendMessage" \
+          -d "chat_id=${{ env.ChatID_LOG }}" \
+          -d "parse_mode=Markdown" \
+          -d "text=*Build Status*: ${{ env.STATUS }} %0A*App Name*: ${{ env.APP_NAME }} %0A*Triggered By*: ${{ github.actor }} %0A*Logs*: [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
