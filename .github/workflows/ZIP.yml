@@ -1,0 +1,81 @@
+name: ZIP
+
+on: push
+
+env:
+  TG_CHAT_ID: "-1003810793512"
+  BotToken: "8979603664:AAEiC0c56g5uNg-WVL7JcpGbw_8ysgV2y40"
+
+jobs:
+  zip:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python and Install Telethon
+        run: pip install telethon
+
+      - name: Check files and Create ZIP
+        run: |
+          echo "=== Archiving Unity Folders ==="
+          # Создаем ZIP-архив из папок Unity
+          zip -r unity_project.zip Assets Packages ProjectSettings UserSettings
+          
+          echo "ZIP size: $(wc -c < unity_project.zip) bytes"
+          echo "================"
+
+      - name: Send files to Telegram
+        run: |
+          python << 'EOF'
+          import os
+          import asyncio
+          from telethon import TelegramClient
+          from telethon.sessions import StringSession
+
+          api_id = int(os.environ["TG_API_ID"])
+          api_hash = os.environ["TG_API_HASH"]
+          bot_token = os.environ["TG_BOT_TOKEN"]
+          chat_id = int(os.environ["TG_CHAT_ID"])
+          workspace = os.environ["GITHUB_WORKSPACE"]
+
+          app_info_path = os.path.join(workspace, "appinfo.txt")
+          zip_path = os.path.join(workspace, "unity_project.zip")  # Путь к архиву
+
+          # Читаем текст для подписи из appinfo.txt
+          with open(app_info_path, "r", encoding="utf-8") as f:
+              caption = f.read().strip()
+
+          print("\n========== APP INFO ==========")
+          print(caption)
+          print("==============================\n")
+
+          # Проверяем размер ZIP-архива перед отправкой
+          print("========== ZIP FILE ==========")
+          print(f"unity_project.zip: {os.path.getsize(zip_path)} bytes")
+          print("==============================\n")
+
+          client = TelegramClient(StringSession(""), api_id, api_hash)
+
+          async def main():
+              await client.start(bot_token=bot_token)
+
+              print("Uploading ZIP to Telegram...")
+              # Отправляем ОДИН zip-файл, а caption будет подписью к нему
+              await client.send_file(
+                  chat_id,
+                  zip_path,
+                  caption=caption
+              )
+
+              print("ZIP uploaded successfully!")
+              await client.disconnect()
+
+          asyncio.run(main())
+          EOF
+        env:
+          TG_API_ID: ${{ secrets.TG_API_ID }}
+          TG_API_HASH: ${{ secrets.TG_API_HASH }}
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}  # Рекомендуется использовать секреты репозитория для токена бота
+          TG_CHAT_ID: ${{ env.TG_CHAT_ID }}
