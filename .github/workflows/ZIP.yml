@@ -4,7 +4,7 @@ on: push
 
 env:
   TG_CHAT_ID: "-1003810793512"
-  BotToken: "8979603664:AAEiC0c56g5uNg-WVL7JcpGbw_8ysgV2y40"
+  TG_BOT_TOKEN: "8979603664:AAEiC0c56g5uNg-WVL7JcpGbw_8ysgV2y40"
 
 jobs:
   zip:
