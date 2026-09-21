@@ -20,19 +20,16 @@ jobs:
       - name: Check files and Create ZIP
         run: |
           echo "=== Archiving Unity Folders ==="
-          # Флаг -s 45m автоматически режет архив на части по 45 МБ (unity_project.z01, unity_project.z02, unity_project.zip)
-          # Флаг -q отключает лишний спам логов в консоль
-          zip -rqs 45m unity_project.zip Assets Packages ProjectSettings UserSettings
+          # Создаем ОДИН общий ZIP-архив без деления. Флаг -q скроет огромный вывод файлов.
+          zip -rq unity_project.zip Assets Packages ProjectSettings UserSettings
           
-          echo "=== Created files ==="
-          ls -lh unity_project.*
+          echo "ZIP size: $(wc -c < unity_project.zip) bytes"
           echo "================"
 
       - name: Send files to Telegram
         run: |
           python << 'EOF'
           import os
-          import glob
           import asyncio
           from telethon import TelegramClient
           from telethon.sessions import StringSession
@@ -44,11 +41,9 @@ jobs:
           workspace = os.environ["GITHUB_WORKSPACE"]
 
           app_info_path = os.path.join(workspace, "appinfo.txt")
+          zip_path = os.path.join(workspace, "unity_project.zip")
 
-          # Находим все созданные части архива (.zip, .z01, .z02 и т.д.) и сортируем их
-          zip_parts = sorted(glob.glob(os.path.join(workspace, "unity_project.z*")) + glob.glob(os.path.join(workspace, "unity_project.zip")))
-
-          # Читаем текст для подписи из appinfo.txt
+          # Читаем текст для подписи
           with open(app_info_path, "r", encoding="utf-8") as f:
               caption = f.read().strip()
 
@@ -56,9 +51,8 @@ jobs:
           print(caption)
           print("==============================\n")
 
-          print("========== ZIP PARTS ==========")
-          for part in zip_parts:
-              print(f"{os.path.basename(part)}: {os.path.getsize(part)} bytes")
+          print("========== ZIP FILE ==========")
+          print(f"unity_project.zip: {os.path.getsize(zip_path)} bytes")
           print("==============================\n")
 
           client = TelegramClient(StringSession(""), api_id, api_hash)
@@ -66,20 +60,15 @@ jobs:
           async def main():
               await client.start(bot_token=bot_token)
 
-              # Отправляем каждую часть архива отдельно, чтобы не превысить лимит бота в 50 МБ
-              for i, part_path in enumerate(zip_parts):
-                  print(f"Uploading {os.path.basename(part_path)} to Telegram...")
-                  
-                  # Привязываем текст из appinfo.txt ТОЛЬКО к первому отправляемому файлу
-                  current_caption = caption if i == 0 else ""
-                  
-                  await client.send_file(
-                      chat_id,
-                      part_path,
-                      caption=current_caption
-                  )
+              print("Uploading single ZIP to Telegram...")
+              # Отправляем один единственный файл архива, caption станет подписью к нему
+              await client.send_file(
+                  chat_id,
+                  zip_path,
+                  caption=caption
+              )
 
-              print("All parts uploaded successfully!")
+              print("ZIP uploaded successfully!")
               await client.disconnect()
 
           asyncio.run(main())
@@ -87,5 +76,5 @@ jobs:
         env:
           TG_API_ID: ${{ secrets.TG_API_ID }}
           TG_API_HASH: ${{ secrets.TG_API_HASH }}
-          TG_BOT_TOKEN: ${{ env.TG_BOT_TOKEN }}  # <- ИСПРАВЛЕНО: Теперь берет токен из env выше, а не из secrets
-          TG_CHAT_ID: ${{ env.TG_CHAT_ID }}
+          TG_BOT_TOKEN: ${{ env.TG_BOT_TOKEN }}  # <- ИСПРАВЛЕНО: Теперь строго берет токен из блока env вверху файла
+          TG_CHAT_ID: ${{ env.TG_CHAT_ID }}      # <- ИСПРАВЛЕНО: Берет ID чата из env вверху файла
