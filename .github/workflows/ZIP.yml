@@ -92,7 +92,6 @@ jobs:
       - name: Create ZIP Archive
         run: |
           echo "=== Archiving Unity Folders ==="
-          # Создаем ZIP-архив. Флаг -q прячет логи тысяч файлов Unity.
           zip -rq "${APP_NAME}.zip" Assets Packages ProjectSettings UserSettings
           echo "ZIP size: $(wc -c < "${APP_NAME}.zip") bytes"
           echo "================"
@@ -164,7 +163,7 @@ jobs:
         env:
           TG_API_ID: ${{ secrets.TG_API_ID }}
           TG_API_HASH: ${{ secrets.TG_API_HASH }}
-          TG_BOT_TOKEN: ${{ env.BotToken }}
+          TG_BOT_TOKEN: ${{ env.TG_BOT_TOKEN }}  # <- ИСПРАВЛЕНО: Было env.BotToken, из-за чего токен терялся
           TG_CHAT_ID: ${{ env.TG_CHAT_ID }}
           APP_NAME: ${{ env.APP_NAME }}
 
